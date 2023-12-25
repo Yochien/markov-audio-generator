@@ -1,2 +1,3 @@
-# markov-audio-generator
-Tool to aid in computer music generation by providing a framework for creating pieces with the markov process.
+# Markov Audio Generator
+
+Tool to aid in computer music creation by providing a framework to quickly iterate on pieces with the markov process.
