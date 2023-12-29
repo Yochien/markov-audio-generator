@@ -27,26 +27,26 @@ def load_state_names(filename: str):
         return states
 
 
-def set_state_choice_map(config: Dict, filename: str):
+def set_state_group_map(config: Dict, filename: str):
     state_names = load_state_names(filename)
 
     state_groups = {}
     for state_name in state_names:
         state_groups[state_name] = f"{state_name}_choices"
 
-    config["state_choice_map"] = state_groups
+    config["state_group_map"] = state_groups
 
 
-def set_choice_audio_map(config: Dict):
+def set_group_audio_map(config: Dict):
     EXAMPLE_FILES = ["./filename1", "./filename2", "./filename3"]
     group_placeholders = {}
 
-    state_groups = config["state_choice_map"]
+    state_groups = config["state_group_map"]
 
     for group in state_groups:
         group_placeholders[state_groups[group]] = EXAMPLE_FILES.copy()
 
-    config["choice_audio_map"] = group_placeholders
+    config["group_audio_map"] = group_placeholders
 
 
 def save_config(config_data: str, filename: str = OUTPUT_FILE_NAME):
@@ -57,6 +57,6 @@ def save_config(config_data: str, filename: str = OUTPUT_FILE_NAME):
 
 
 set_output_audio_config(config_data)
-set_state_choice_map(config_data, INPUT_FILE_NAME)
-set_choice_audio_map(config_data)
+set_state_group_map(config_data, INPUT_FILE_NAME)
+set_group_audio_map(config_data)
 save_config(config_data)

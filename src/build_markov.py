@@ -33,10 +33,47 @@ class Link:
         return f"{self.from_node.state_name} --> {self.to_node.state_name} w/ {self.transition_chance * 100:.0f}% chance"
 
 
+class Sampler():
+    def __init__(self, config):
+        self.config = config
+        self.audio_groups = self.load_audio_groups()
+        self.state_group_map = self.config["state_group_map"]
+
+    def load_audio_groups(self):
+        audio_groups = {}
+        group_audio_map = self.config["group_audio_map"]
+
+        for group_name, sample_locations in group_audio_map.items():
+            group_samples = []
+            for sample_location in sample_locations:
+                sample = AudioSegment.empty()
+                try:
+                    sample = AudioSegment.from_file(sample_location)
+                except FileNotFoundError:
+                    print("Could not find file for", sample_location)
+                    sample = AudioSegment.empty()
+                group_samples.append(sample)
+
+            audio_groups[group_name] = group_samples
+
+        return audio_groups
+
+    def getRandomSample(self, choices: list[AudioSegment]):
+        return choices[random.randrange(len(choices))]
+
+    def getRandomSampleByState(self, state_name: str):
+        if state_name in self.state_group_map:
+            group_name = self.state_group_map[state_name]
+            choices = self.audio_groups[group_name]
+            return self.getRandomSample(choices)
+        else:
+            return AudioSegment.empty()
+
+
 parser = argparse.ArgumentParser(prog = "Markov Audio Generator",
                                  description = "Generates an audio file based on the input FSM file.")
-parser.add_argument("-i", "--input_file", type = str, help = "The exact location and name of the input file (the FSM file).")
-parser.add_argument("-c", "--config_file", type = str, help = "The exact location and name of the config file (generated from the Markov Audio Config Builder).")
+parser.add_argument("-i", "--input_file", type = str, help = "The exact location and name of the input file (the FSM file).", required = True)
+parser.add_argument("-c", "--config_file", type = str, help = "The exact location and name of the config file (generated from the Markov Audio Config Builder).", required = True)
 parser.add_argument("-o", "--output_file", type = str, help = "The exact desired location and name of the final output file.",
                     default = "../output/markov_audio.wav", required = False)
 args = parser.parse_args()
@@ -80,46 +117,11 @@ for row in transition_table:
         row[1][state_index] = link.transition_chance
 
 
-def getRandomSample(choices: list[AudioSegment]):
-    return choices[random.randrange(len(choices))]
-
-
-def getRandomSampleByState(state_name: str, state_group_map, audio_groups):
-    if state_name in state_group_map:
-        group_name = state_group_map[state_name]
-        choices = audio_groups[group_name]
-        return getRandomSample(choices)
-    else:
-        return AudioSegment.empty()
-
-
-def load_audio_groups(config):
-    audio_groups = {}
-    choice_audio_map = config["choice_audio_map"]
-
-    for group_name, sample_locations in choice_audio_map.items():
-        group_samples = []
-        for sample_location in sample_locations:
-            sample = AudioSegment.empty()
-            try:
-                sample = AudioSegment.from_file(sample_location)
-            except FileNotFoundError:
-                print("Could not find file for", sample_location)
-                sample = AudioSegment.empty()
-            group_samples.append(sample)
-
-        audio_groups[group_name] = group_samples
-
-    return audio_groups
-
-
 with open(CONFIG_FILE_NAME, 'r') as file:
     STATE_NAMES = [node.state_name for node in nodes]
     config = yaml.safe_load(file)
     min_sim_len = config["minimum_simulation_length"]
-
-    state_group_map = config["state_choice_map"]
-    audio_groups = load_audio_groups(config)
+    sampler = Sampler(config)
 
     sim_result = []
     while len(sim_result) < min_sim_len:
@@ -135,7 +137,7 @@ with open(CONFIG_FILE_NAME, 'r') as file:
 
     print(sim_result)
 
-    for result in sim_result:
-        final = final + getRandomSampleByState(result, state_group_map, audio_groups)
+    for state_name in sim_result:
+        final = final + sampler.getRandomSampleByState(state_name)
 
     final.export(OUTPUT_FILE_NAME, format="wav")

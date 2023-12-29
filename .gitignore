@@ -1,6 +1,15 @@
 # IDE
 .vscode/
 
+## Project
+
+# Project Input
+*.yaml
+*.json
+
+# Project Output
+*.wav
+
 ## Python
 venv/
 
