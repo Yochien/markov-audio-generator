@@ -6,7 +6,7 @@ from typing import Dict
 
 parser = argparse.ArgumentParser(prog = "Markov Audio Config Builder",
                                  description = "Generates an example config for the Markov Audio Generator based on an input FSM file.")
-parser.add_argument("-i", "--input_file", type = str, help = "The exact location and name of the FSM file.")
+parser.add_argument("input_file", type = str, help = "The exact location and name of the FSM file.")
 parser.add_argument("-o", "--output_file", type = str, help = "The exact desired location and name of the final output file.",
                     default = "./sound_config.yaml", required = False)
 args = parser.parse_args()
