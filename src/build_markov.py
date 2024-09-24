@@ -142,7 +142,7 @@ with open(CONFIG_FILE_NAME, 'r') as file:
 
     final = AudioSegment.empty()
 
-    print(sim_result)
+    print("Generated states:", ", ".join(sim_result))
 
     for state_name in sim_result:
         final = final + sampler.getRandomSampleByState(state_name)
