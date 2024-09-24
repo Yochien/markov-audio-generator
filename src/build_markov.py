@@ -72,12 +72,12 @@ class Sampler():
 
 parser = argparse.ArgumentParser(prog = "Markov Audio Generator",
                                  description = "Generates an audio file based on the input FSM file.")
-parser.add_argument("-i", "--input_file", type = str, help = "The exact location and name of the input file (the FSM file).", required = True)
-parser.add_argument("-c", "--config_file", type = str, help = "The exact location and name of the config file (generated from the Markov Audio Config Builder).", required = True)
+parser.add_argument("input_fsm", type = str, help = "The exact location and name of the input FSM file.")
+parser.add_argument("config_file", type = str, help = "The exact location and name of the config file (generated from the Markov Audio Config Builder).")
 parser.add_argument("-o", "--output_file", type = str, help = "The exact desired location and name of the final output file.",
-                    default = "../output/markov_audio.wav", required = False)
+                    default = "../output/markov_audio.wav")
 args = parser.parse_args()
-INPUT_FILE_NAME = args.input_file
+INPUT_FILE_NAME = args.input_fsm
 CONFIG_FILE_NAME = args.config_file
 OUTPUT_FILE_NAME = args.output_file
 
