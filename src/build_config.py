@@ -18,6 +18,7 @@ config_data = {}
 
 def set_output_audio_config(config: Dict):
     config["minimum_simulation_length"] = 1
+    config["maximum_simulation_length"] = 999
 
 
 def load_state_names(filename: str):

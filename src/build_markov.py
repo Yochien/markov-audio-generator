@@ -121,10 +121,12 @@ with open(CONFIG_FILE_NAME, 'r') as file:
     STATE_NAMES = [node.state_name for node in nodes]
     config = yaml.safe_load(file)
     min_sim_len = config["minimum_simulation_length"]
+    max_sim_len = config["maximum_simulation_length"]
+    current_sim_cycles = 0
     sampler = Sampler(config)
 
     sim_result = []
-    while len(sim_result) < min_sim_len:
+    while (len(sim_result) < min_sim_len) and (current_sim_cycles < max_sim_len):
         sim_result.clear()
         current_state = np.random.choice(STATE_NAMES, p = transition_table[0][1])
         sim_result.append(current_state)
@@ -132,6 +134,11 @@ with open(CONFIG_FILE_NAME, 'r') as file:
         while current_state != "end":
             current_state = np.random.choice(STATE_NAMES, p = transition_table[STATE_NAMES.index(current_state)][1])
             sim_result.append(current_state)
+            current_sim_cycles = current_sim_cycles + 1
+
+    if current_sim_cycles >= max_sim_len:
+        print("Audio generation ended early due to reaching maximum allowed cycles.")
+        print("Raise this in your config if this is stopping you from generating the length of piece you want.")
 
     final = AudioSegment.empty()
 
