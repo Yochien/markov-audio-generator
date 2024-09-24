@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(prog = "Markov Audio Config Builder",
                                  description = "Generates a template config for the Markov Audio Generator based on an input FSM file.")
 parser.add_argument("input_file", type = str, help = "The exact location and name of the FSM file.")
 parser.add_argument("-o", "--output_file", type = str, help = "The exact desired location and name of the final output file.",
-                    default = "./sound_config_template.yaml", required = False)
+                    default = "./sound_config_template.yaml")
 args = parser.parse_args()
 INPUT_FILE_NAME = args.input_file
 OUTPUT_FILE_NAME = args.output_file
