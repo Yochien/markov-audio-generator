@@ -131,7 +131,7 @@ with open(CONFIG_FILE_NAME, 'r') as file:
         current_state = np.random.choice(STATE_NAMES, p = transition_table[0][1])
         sim_result.append(current_state)
 
-        while current_state != "end":
+        while (current_state != "end") and (current_sim_cycles < max_sim_len):
             current_state = np.random.choice(STATE_NAMES, p = transition_table[STATE_NAMES.index(current_state)][1])
             sim_result.append(current_state)
             current_sim_cycles = current_sim_cycles + 1
