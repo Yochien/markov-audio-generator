@@ -1,0 +1,23 @@
+group_audio_map:
+  A_choices:
+  - ../samples/example/blip.wav
+  B_choices:
+  - ../samples/example/laser_1.wav
+  - ../samples/example/laser_2.wav
+  - ../samples/example/laser_3.wav
+  C_choices:
+  - ../samples/example/power-up_1.wav
+  - ../samples/example/power-up_2.wav
+  - ../samples/example/power-up_3.wav
+  end_choices:
+  - ../samples/example/explosion.wav
+  start_choices:
+  - ../samples/example/click.wav
+maximum_simulation_length: 999
+minimum_simulation_length: 1
+state_group_map:
+  A: A_choices
+  B: B_choices
+  C: C_choices
+  end: end_choices
+  start: start_choices

@@ -6,9 +6,17 @@
 # Project Input
 *.yaml
 *.json
+*.wav
+*.mp3
+samples/*
+!samples/example/
+!samples/example/*.wav
+config/*
+!config/exampleFSM.json
+!config/sound_config_example.yaml
 
 # Project Output
-*.wav
+output/*
 
 ## Python
 venv/

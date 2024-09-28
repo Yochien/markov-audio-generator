@@ -1,0 +1,102 @@
+{
+    "nodes": [
+        {
+            "x": 146,
+            "y": 254,
+            "text": "start",
+            "isAcceptState": false,
+            "textOnly": false
+        },
+        {
+            "x": 399,
+            "y": 254,
+            "text": "end",
+            "isAcceptState": false,
+            "textOnly": false
+        },
+        {
+            "x": 206,
+            "y": 172,
+            "text": "A",
+            "isAcceptState": false,
+            "textOnly": false
+        },
+        {
+            "x": 272,
+            "y": 254,
+            "text": "B",
+            "isAcceptState": false,
+            "textOnly": false
+        },
+        {
+            "x": 334,
+            "y": 172,
+            "text": "C",
+            "isAcceptState": false,
+            "textOnly": false
+        }
+    ],
+    "links": [
+        {
+            "type": "Link",
+            "nodeA": 0,
+            "nodeB": 2,
+            "text": "",
+            "lineAngleAdjust": 0,
+            "parallelPart": 0.5,
+            "perpendicularPart": 0
+        },
+        {
+            "type": "Link",
+            "nodeA": 2,
+            "nodeB": 3,
+            "text": ".9",
+            "lineAngleAdjust": 0,
+            "parallelPart": 0.5,
+            "perpendicularPart": 0
+        },
+        {
+            "type": "Link",
+            "nodeA": 3,
+            "nodeB": 4,
+            "text": ".6",
+            "lineAngleAdjust": 0,
+            "parallelPart": 0.5,
+            "perpendicularPart": 0
+        },
+        {
+            "type": "Link",
+            "nodeA": 4,
+            "nodeB": 1,
+            "text": ".8",
+            "lineAngleAdjust": 0,
+            "parallelPart": 0.5,
+            "perpendicularPart": 0
+        },
+        {
+            "type": "Link",
+            "nodeA": 2,
+            "nodeB": 4,
+            "text": ".1",
+            "lineAngleAdjust": 3.141592653589793,
+            "parallelPart": 0.4921875,
+            "perpendicularPart": 0
+        },
+        {
+            "type": "SelfLink",
+            "node": 3,
+            "text": ".4",
+            "anchorAngle": 1.5707963267948966
+        },
+        {
+            "type": "Link",
+            "nodeA": 4,
+            "nodeB": 2,
+            "text": ".2",
+            "lineAngleAdjust": 0,
+            "parallelPart": 0.53125,
+            "perpendicularPart": 67
+        }
+    ],
+    "nodeRadius": 30
+}

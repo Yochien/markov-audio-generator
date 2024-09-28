@@ -34,3 +34,7 @@ Tool to aid in computer music creation by providing a framework to quickly itera
 
 1. Run the `build_markov` script and provide it both the FSM `.json` file and configuration `.yaml` file.
     - The traversal through the markov process, assuming multiple samples and some state transition choices, should yield different results every time.
+
+## Credits
+
+Example samples generated with [sfxr](https://sfxr.me/).
