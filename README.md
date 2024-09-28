@@ -37,4 +37,4 @@ Tool to aid in computer music creation by providing a framework to quickly itera
 
 ## Credits
 
-Example samples generated with [sfxr](https://sfxr.me/).
+Example samples generated with [jsfxr](https://sfxr.me/).
