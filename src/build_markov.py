@@ -34,14 +34,12 @@ class Link:
 
 
 class Sampler():
-    def __init__(self, config):
-        self.config = config
-        self.audio_groups = self.load_audio_groups()
-        self.state_group_map = self.config["state_group_map"]
+    def __init__(self, state_group_map, group_audio_map):
+        self.state_group_map = state_group_map
+        self.audio_groups = self.load_audio_groups(group_audio_map)
 
-    def load_audio_groups(self):
+    def load_audio_groups(self, group_audio_map: dict):
         audio_groups = {}
-        group_audio_map = self.config["group_audio_map"]
 
         for group_name, sample_locations in group_audio_map.items():
             group_samples = []
@@ -142,7 +140,7 @@ def main():
     min_sim_len = config["minimum_simulation_length"]
     max_sim_len = config["maximum_simulation_length"]
     current_sim_cycles = 0
-    sampler = Sampler(config)
+    sampler = Sampler(config["state_group_map"], config["group_audio_map"])
 
     sim_result = []
     while (len(sim_result) < min_sim_len) and (current_sim_cycles < max_sim_len):
