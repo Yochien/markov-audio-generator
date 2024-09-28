@@ -130,11 +130,12 @@ with open(CONFIG_FILE_NAME, 'r') as file:
         sim_result.clear()
         current_state = transition_table[0][0]
         sim_result.append(current_state)
+        current_sim_cycles += 1
 
         while (current_state != "end") and (current_sim_cycles < max_sim_len):
             current_state = np.random.choice(STATE_NAMES, p = transition_table[STATE_NAMES.index(current_state)][1])
             sim_result.append(current_state)
-            current_sim_cycles = current_sim_cycles + 1
+            current_sim_cycles += 1
 
     if current_sim_cycles >= max_sim_len:
         print("Audio generation ended early due to reaching maximum allowed cycles.")
