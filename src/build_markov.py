@@ -70,7 +70,7 @@ class Sampler():
             return AudioSegment.empty()
 
 
-def parse_fsm_data(filename: str) -> Tuple[List[Node], List[Link]]:
+def load_fsm(filename: str) -> Tuple[List[Node], List[Link]]:
     nodes: List[Node] = []
     links: List[Link] = []
 
@@ -93,6 +93,19 @@ def parse_fsm_data(filename: str) -> Tuple[List[Node], List[Link]]:
     return nodes, links
 
 
+def load_config(filename: str) -> dict:
+    try:
+        with open(filename, 'r') as file:
+            config = yaml.safe_load(file)
+            return config
+    except FileNotFoundError:
+        print(f"File: '{filename}' could not be found.")
+        exit(1)
+    except IOError as error:
+        print(f"The IOError: '{error}' occurred while trying to read the file: '{filename}'")
+        exit(1)
+
+
 def main():
     parser = argparse.ArgumentParser(prog = "Markov Audio Generator", description = "Generates an audio file based on the input FSM file.")
     parser.add_argument("input_fsm", type = str, help = "The exact location and name of the input FSM file.")
@@ -103,7 +116,7 @@ def main():
     CONFIG_FILE_NAME = args.config_file
     OUTPUT_FILE_NAME = args.output_file
 
-    nodes, links = parse_fsm_data(INPUT_FILE_NAME)
+    nodes, links = load_fsm(INPUT_FILE_NAME)
 
     # Initialize transition table
     transition_table = []
@@ -121,38 +134,37 @@ def main():
             state_index = nodes.index(link.to_node)
             row[1][state_index] = link.transition_chance
 
-    with open(CONFIG_FILE_NAME, 'r') as file:
-        STATE_NAMES = [node.state_name for node in nodes]
-        config = yaml.safe_load(file)
-        min_sim_len = config["minimum_simulation_length"]
-        max_sim_len = config["maximum_simulation_length"]
-        current_sim_cycles = 0
-        sampler = Sampler(config)
+    config = load_config(CONFIG_FILE_NAME)
+    STATE_NAMES = [node.state_name for node in nodes]
+    min_sim_len = config["minimum_simulation_length"]
+    max_sim_len = config["maximum_simulation_length"]
+    current_sim_cycles = 0
+    sampler = Sampler(config)
 
-        sim_result = []
-        while (len(sim_result) < min_sim_len) and (current_sim_cycles < max_sim_len):
-            sim_result.clear()
-            current_state = transition_table[0][0]
+    sim_result = []
+    while (len(sim_result) < min_sim_len) and (current_sim_cycles < max_sim_len):
+        sim_result.clear()
+        current_state = transition_table[0][0]
+        sim_result.append(current_state)
+        current_sim_cycles += 1
+
+        while (current_state != "end") and (current_sim_cycles < max_sim_len):
+            current_state = np.random.choice(STATE_NAMES, p = transition_table[STATE_NAMES.index(current_state)][1])
             sim_result.append(current_state)
             current_sim_cycles += 1
 
-            while (current_state != "end") and (current_sim_cycles < max_sim_len):
-                current_state = np.random.choice(STATE_NAMES, p = transition_table[STATE_NAMES.index(current_state)][1])
-                sim_result.append(current_state)
-                current_sim_cycles += 1
+    if current_sim_cycles >= max_sim_len:
+        print("Audio generation ended early due to reaching maximum allowed cycles.")
+        print("Raise this in your config if this is stopping you from generating the length of piece you want.")
 
-        if current_sim_cycles >= max_sim_len:
-            print("Audio generation ended early due to reaching maximum allowed cycles.")
-            print("Raise this in your config if this is stopping you from generating the length of piece you want.")
+    final = AudioSegment.empty()
 
-        final = AudioSegment.empty()
+    print("Generated states:", ", ".join(sim_result))
 
-        print("Generated states:", ", ".join(sim_result))
+    for state_name in sim_result:
+        final = final + sampler.getRandomSampleByState(state_name)
 
-        for state_name in sim_result:
-            final = final + sampler.getRandomSampleByState(state_name)
-
-        final.export(OUTPUT_FILE_NAME, format="wav")
+    final.export(OUTPUT_FILE_NAME, format="wav")
 
 
 if __name__ == "__main__":
