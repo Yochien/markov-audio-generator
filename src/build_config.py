@@ -39,7 +39,7 @@ def set_state_group_map(config: Dict, filename: str):
 
 
 def set_group_audio_map(config: Dict):
-    EXAMPLE_FILES = ["./filename1", "./filename2", "./filename3"]
+    EXAMPLE_FILES = ["../samples/filename1", "../samples/filename2", "../samples/filename3"]
     group_placeholders = {}
 
     state_groups = config["state_group_map"]
