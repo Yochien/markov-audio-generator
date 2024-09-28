@@ -106,6 +106,15 @@ def load_config(filename: str) -> dict:
         exit(1)
 
 
+def initialize_transition_table(nodes: List[Node]) -> Tuple[str, List[int]]:
+    transition_table = []
+    for node in nodes:
+        transition_chances = [0 for _ in range(len(nodes))]
+        row = (node.state_name, transition_chances)
+        transition_table.append(row)
+    return transition_table
+
+
 def main():
     parser = argparse.ArgumentParser(prog = "Markov Audio Generator", description = "Generates an audio file based on the input FSM file.")
     parser.add_argument("input_fsm", type = str, help = "The exact location and name of the input FSM file.")
@@ -117,13 +126,7 @@ def main():
     OUTPUT_FILE_NAME = args.output_file
 
     nodes, links = load_fsm(INPUT_FILE_NAME)
-
-    # Initialize transition table
-    transition_table = []
-    for node in nodes:
-        transition_chances = [0 for _ in range(len(nodes))]
-        row = (node.state_name, transition_chances)
-        transition_table.append(row)
+    transition_table = initialize_transition_table(nodes)
 
     # Fill in transition values from links
     for row in transition_table:
