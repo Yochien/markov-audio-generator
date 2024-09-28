@@ -5,7 +5,7 @@ from pydub import AudioSegment
 import random
 import argparse
 
-from typing import List
+from typing import List, Tuple
 
 
 class Node:
@@ -70,20 +70,11 @@ class Sampler():
             return AudioSegment.empty()
 
 
-def main():
-    parser = argparse.ArgumentParser(prog = "Markov Audio Generator", description = "Generates an audio file based on the input FSM file.")
-    parser.add_argument("input_fsm", type = str, help = "The exact location and name of the input FSM file.")
-    parser.add_argument("config_file", type = str, help = "The exact location and name of the config file (generated from the Markov Audio Config Builder).")
-    parser.add_argument("-o", "--output_file", type = str, help = "The exact desired location and name of the final output file.", default = "../output/markov_audio.wav")
-    args = parser.parse_args()
-    INPUT_FILE_NAME = args.input_fsm
-    CONFIG_FILE_NAME = args.config_file
-    OUTPUT_FILE_NAME = args.output_file
-
+def parse_fsm_data(filename: str) -> Tuple[List[Node], List[Link]]:
     nodes: List[Node] = []
     links: List[Link] = []
 
-    with open(INPUT_FILE_NAME, mode="r") as file:
+    with open(filename, mode="r") as file:
         data = json.load(file)
         for data_node in data["nodes"]:
             node = Node(data_node["text"], data_node["isAcceptState"])
@@ -99,11 +90,26 @@ def main():
                 link = Link(node, node, data_link["text"])
                 links.append(link)
 
+    return nodes, links
+
+
+def main():
+    parser = argparse.ArgumentParser(prog = "Markov Audio Generator", description = "Generates an audio file based on the input FSM file.")
+    parser.add_argument("input_fsm", type = str, help = "The exact location and name of the input FSM file.")
+    parser.add_argument("config_file", type = str, help = "The exact location and name of the config file (generated from the Markov Audio Config Builder).")
+    parser.add_argument("-o", "--output_file", type = str, help = "The exact desired location and name of the final output file.", default = "../output/markov_audio.wav")
+    args = parser.parse_args()
+    INPUT_FILE_NAME = args.input_fsm
+    CONFIG_FILE_NAME = args.config_file
+    OUTPUT_FILE_NAME = args.output_file
+
+    nodes, links = parse_fsm_data(INPUT_FILE_NAME)
+
     # Initialize transition table
     transition_table = []
-    num_nodes = len(nodes)
     for node in nodes:
-        row = (node.state_name, [0 for _ in range(num_nodes)])
+        transition_chances = [0 for _ in range(len(nodes))]
+        row = (node.state_name, transition_chances)
         transition_table.append(row)
 
     # Fill in transition values from links
