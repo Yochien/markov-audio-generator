@@ -116,7 +116,7 @@ def initialize_transition_table(nodes: List[Node]) -> TransitionTable:
     return transition_table
 
 
-def populate_transition_table(transition_table: TransitionTable, nodes: List[Node], links: List[Link]):
+def populate_transition_table(transition_table: TransitionTable, nodes: List[Node], links: List[Link]) -> None:
     for row in transition_table:
         row_state_name = row[0]
         row_links = [link for link in links if link.from_node.state_name == row_state_name]
@@ -148,6 +148,15 @@ def run_markov_simulation(min_sim_len: int, max_sim_len: int, transition_table: 
     return sim_result
 
 
+def generate_audio(sampler: Sampler, state_names: List[str], filename: str, audio_format: str = "wav") -> None:
+    final = AudioSegment.empty()
+
+    for state_name in state_names:
+        final = final + sampler.getRandomSampleByState(state_name)
+
+    final.export(filename, format=audio_format)
+
+
 def main():
     parser = argparse.ArgumentParser(prog = "Markov Audio Generator", description = "Generates an audio file based on the input FSM file.")
     parser.add_argument("input_fsm", type = str, help = "The exact location and name of the input FSM file.")
@@ -163,17 +172,12 @@ def main():
     populate_transition_table(transition_table, nodes, links)
 
     config = load_config(CONFIG_FILE_NAME)
-    sampler = Sampler(config["state_group_map"], config["group_audio_map"])
 
     sim_result = run_markov_simulation(config["minimum_simulation_length"], config["maximum_simulation_length"], transition_table, nodes)
     print("Generated states:", ", ".join(sim_result))
 
-    final = AudioSegment.empty()
-
-    for state_name in sim_result:
-        final = final + sampler.getRandomSampleByState(state_name)
-
-    final.export(OUTPUT_FILE_NAME, format="wav")
+    sampler = Sampler(config["state_group_map"], config["group_audio_map"])
+    generate_audio(sampler, sim_result, OUTPUT_FILE_NAME)
 
 
 if __name__ == "__main__":
