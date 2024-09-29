@@ -68,6 +68,9 @@ class Sampler():
             return AudioSegment.empty()
 
 
+TransitionTable = Tuple[str, List[int]]
+
+
 def load_fsm(filename: str) -> Tuple[List[Node], List[Link]]:
     nodes: List[Node] = []
     links: List[Link] = []
@@ -104,7 +107,7 @@ def load_config(filename: str) -> dict:
         exit(1)
 
 
-def initialize_transition_table(nodes: List[Node]) -> Tuple[str, List[int]]:
+def initialize_transition_table(nodes: List[Node]) -> TransitionTable:
     transition_table = []
     for node in nodes:
         transition_chances = [0 for _ in range(len(nodes))]
@@ -113,7 +116,7 @@ def initialize_transition_table(nodes: List[Node]) -> Tuple[str, List[int]]:
     return transition_table
 
 
-def populate_transition_table(transition_table: Tuple[str, List[int]], nodes: List[Node], links: List[Link]):
+def populate_transition_table(transition_table: TransitionTable, nodes: List[Node], links: List[Link]):
     for row in transition_table:
         row_state_name = row[0]
         row_links = [link for link in links if link.from_node.state_name == row_state_name]
