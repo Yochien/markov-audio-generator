@@ -157,27 +157,29 @@ def generate_audio(sampler: Sampler, state_names: List[str], filename: str, audi
     final.export(filename, format=audio_format)
 
 
-def main():
+def build_argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog = "Markov Audio Generator", description = "Generates an audio file based on the input FSM file.")
     parser.add_argument("input_fsm", type = str, help = "The exact location and name of the input FSM file.")
     parser.add_argument("config_file", type = str, help = "The exact location and name of the config file (generated from the Markov Audio Config Builder).")
     parser.add_argument("-o", "--output_file", type = str, help = "The exact desired location and name of the final output file.", default = "../output/markov_audio.wav")
-    args = parser.parse_args()
-    INPUT_FILE_NAME = args.input_fsm
-    CONFIG_FILE_NAME = args.config_file
-    OUTPUT_FILE_NAME = args.output_file
+    return parser
 
-    nodes, links = load_fsm(INPUT_FILE_NAME)
+
+def main():
+    parser = build_argument_parser()
+    args = parser.parse_args()
+
+    nodes, links = load_fsm(args.input_fsm)
     transition_table = initialize_transition_table(nodes)
     populate_transition_table(transition_table, nodes, links)
 
-    config = load_config(CONFIG_FILE_NAME)
+    config = load_config(args.config_file)
 
     sim_result = run_markov_simulation(config["minimum_simulation_length"], config["maximum_simulation_length"], transition_table, nodes)
     print("Generated states:", ", ".join(sim_result))
 
     sampler = Sampler(config["state_group_map"], config["group_audio_map"])
-    generate_audio(sampler, sim_result, OUTPUT_FILE_NAME)
+    generate_audio(sampler, sim_result, args.output_file)
 
 
 if __name__ == "__main__":

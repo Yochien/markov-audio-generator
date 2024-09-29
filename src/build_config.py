@@ -46,20 +46,22 @@ def save_config(config_data: str, filename: str):
         config_file.write(config_text)
 
 
-def main():
+def build_argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog = "Markov Audio Config Builder", description = "Generates a template config for the Markov Audio Generator based on an input FSM file.")
     parser.add_argument("input_file", type = str, help = "The exact location and name of the FSM file.")
     parser.add_argument("-o", "--output_file", type = str, help = "The exact desired location and name of the final output file.", default = "../output/sound_config_template.yaml")
+    return parser
+
+
+def main():
+    parser = build_argument_parser()
     args = parser.parse_args()
-    INPUT_FILE_NAME = args.input_file
-    OUTPUT_FILE_NAME = args.output_file
 
     config_data = {}
-
     set_output_audio_config(config_data)
-    set_state_group_map(config_data, INPUT_FILE_NAME)
+    set_state_group_map(config_data, args.input_file)
     set_group_audio_map(config_data)
-    save_config(config_data, OUTPUT_FILE_NAME)
+    save_config(config_data, args.output_file)
 
 
 if __name__ == "__main__":
