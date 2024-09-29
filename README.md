@@ -10,9 +10,9 @@ Tool to aid in computer music creation by providing a framework to quickly itera
 
 1. Build your FSM using [this](https://www.cs.unc.edu/~otternes/comp455/fsm_designer/) site or [this](https://madebyevan.com/fsm/) site making sure to follow the caveats below.
     - **Disclaimer**: This project relies on the work by [Evan Wallace](https://github.com/evanw) linked above, but is not affiliated with them in any way.
-    - *Note*: The first link has a version that will allow for reuploading previous works to modify them.
+    - *Note*: The first link has a version that will allow for re-uploading previous works to modify them.
     1. *Note*: To indicate that there is a percentage chance to transition from a given state to another one, use a decimal representing that percentage. Ex: 20% chance to transition from A to B would be denoted with a connecting arrow labelled `.2`.
-    2. *Note*: Requires a state named `end` in order to properly exit.
+    2. *Note*: Requires at least one accept state to exit the simulation properly.
 2. Save your FSM as a `.json` file.
 3. Run the `build_config` script with your FSM file as the input.
     - This will generate a `.yaml` file that is used for configuring the audio generation script later.

@@ -111,15 +111,14 @@ def initialize_transition_table(nodes: List[Node]) -> TransitionTable:
     transition_table = []
     for node in nodes:
         transition_chances = [0 for _ in range(len(nodes))]
-        row = (node.state_name, transition_chances)
+        row = (node, transition_chances)
         transition_table.append(row)
     return transition_table
 
 
 def populate_transition_table(transition_table: TransitionTable, nodes: List[Node], links: List[Link]) -> None:
     for row in transition_table:
-        row_state_name = row[0]
-        row_links = [link for link in links if link.from_node.state_name == row_state_name]
+        row_links = [link for link in links if link.from_node.state_name == row[0].state_name]
 
         for link in row_links:
             state_index = nodes.index(link.to_node)
@@ -127,18 +126,17 @@ def populate_transition_table(transition_table: TransitionTable, nodes: List[Nod
 
 
 def run_markov_simulation(min_sim_len: int, max_sim_len: int, transition_table: TransitionTable, nodes: List[Node]) -> List[str]:
-    STATE_NAMES = [node.state_name for node in nodes]
     current_sim_cycles = 0
     sim_result = []
     while (len(sim_result) < min_sim_len) and (current_sim_cycles < max_sim_len):
         sim_result.clear()
         current_state = transition_table[0][0]
-        sim_result.append(current_state)
+        sim_result.append(current_state.state_name)
         current_sim_cycles += 1
 
-        while (current_state != "end") and (current_sim_cycles < max_sim_len):
-            current_state = np.random.choice(STATE_NAMES, p = transition_table[STATE_NAMES.index(current_state)][1])
-            sim_result.append(current_state)
+        while not current_state.is_accept_state and (current_sim_cycles < max_sim_len):
+            current_state = np.random.choice(nodes, p = transition_table[nodes.index(current_state)][1])
+            sim_result.append(current_state.state_name)
             current_sim_cycles += 1
 
     if current_sim_cycles >= max_sim_len:

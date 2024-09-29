@@ -11,7 +11,7 @@
             "x": 399,
             "y": 254,
             "text": "end",
-            "isAcceptState": false,
+            "isAcceptState": true,
             "textOnly": false
         },
         {
